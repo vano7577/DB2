@@ -1,0 +1,137 @@
+@startuml ER_1
+
+right header
+<font size=24 color=black>Package: <b>ER_1.0
+
+end header
+
+title
+<font size=18 color=black>Залiзничний вокзал
+<font size=16 color=black>ER–діаграма (нотація Crow’s Foot)
+end title
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "Пасажири" as   passengers #LightPink{
+  пасажир_id 
+  --
+  ПІБ 
+  стать 
+  дата народження
+  паспортнi данi
+  IПН
+  акаунт_id
+}
+
+entity "Акаунти" as accounts #LightPink{
+  акаунт_id 
+  --
+  логiн
+  email
+  пароль
+  бонусний рахунок
+}
+
+entity "Станції" as stations #LightGreen{
+  станція_id 
+  --
+  назва
+  країна
+  місцевий час
+}
+
+entity "Потяги" as trains #LightBlue{
+  потяг_id 
+  --
+  номер потяга
+  номер локоматива
+  тип локоматива
+}
+
+entity "Рейси" as flights #YellowGreen{
+  рейс_id  
+  --
+  потяг_id
+  статус
+  дата
+  маршрут_id
+  затримка
+}
+
+entity "Маршрути" as routes #LightGreen{
+  маршрут_id  
+  --
+  станцiя_id
+  час прибуття
+  час выдправлення
+  вiдстань
+}
+
+entity "Вагони" as wagons #LightBlue{
+  вагон_id  
+  --
+  потяг_id
+  номер вагону
+  кiлькiсть місць
+  тип місць
+  тип вагона
+}
+
+entity "Послуги" as services #LightSeaGreen {
+  послуга_id  
+  --
+  назва послуги
+  цiна послуги
+  кількість послуг
+}
+
+entity "Знижки" as discounts #LightSeaGreen {
+  знижка_id  
+  --
+  назва знижки 
+  відсоток знижки
+}
+
+entity "Бонуси" as bonuses #LightSeaGreen {
+  бонус_id  
+  --
+  оплачено бонусами
+  нараховано бонусів
+}
+entity "Квитки" as tickets #LightSalmon {
+  квиток_id  
+  --
+  номер квитка
+  пасажир_id
+  потяг_id  
+  вагон_id  
+  номер мiсця
+  ціна проїзду  
+  послуга_id
+  знижка_id
+  бонус_id
+}
+passengers }o--o| accounts
+stations ||-u-o{ routes
+trains ||--o{ wagons
+flights }o--|| trains
+flights }o--|| routes
+flights ||--o{ tickets 
+wagons ||-u-o{ tickets
+tickets }o-u-o| services
+tickets }o-u-o| discounts
+tickets }o--o| bonuses
+tickets }o-l-|| passengers
+
+
+
+
+right footer
+
+НТУУ КПІ ім.І.Сікорського
+Киів-2020 
+end footer
+@enduml
