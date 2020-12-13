@@ -1,0 +1,285 @@
+@startuml
+skinparam noteTextAlignment center
+' hide the spot
+hide circle
+' avoid problems with angled crows feet
+skinparam linetype ortho
+'skinparam roundcorner 20
+skinparam NoteBorderColor black
+skinparam backgroundcolor White/AntiqueWhite
+skinparam class{
+  NoteBorderColor black
+  ArrowColor black
+  BorderColor black
+  'ArrowThickness 2
+} 
+right header
+<font size=24 color=black>Package: <b>ER_1.2
+
+end header
+title
+<font size=18 color=black>Залiзничний вокзал
+<font size=16 color=black>ER–діаграма (нотація Crow’s Foot)
+
+end title
+entity Passengers #LightPink{
+  passenger_id 
+  --
+  account_id
+  full_name 
+  gender
+  birthday
+  passport_data
+  individual_tax_num
+}
+entity Accounts #LightPink{
+  account_id
+  --
+  login 
+  email 
+  password 
+  bonus_score 
+}
+
+entity Stations #LightGreen{
+  station_id
+  --
+  station_name 
+  country  
+  local_time    
+}
+
+entity Trains #LightBlue{
+  train_id
+  --
+  train_num
+  locomotive_id
+}
+
+entity Locomotives #LightBlue{
+  locomotive_id
+  --
+  locomotive_num
+  locomotive_type_id
+}
+entity Locomotive_types #LightBlue{
+  locomotive_type_id
+  --
+  locomotive_type_name
+  fuel_id
+}
+entity Fuels #LightBlue{
+  fuel_id
+  --
+  fuel_name
+}
+
+entity Routes #Plum{
+  route_id 
+  --
+  route_num
+}
+
+entity Routes_Stations #LightGreen-Plum{
+  route_atation_id  
+  --
+  station_id
+  route_id  
+  arrival_time  
+  departure_time  
+  platform
+  distance  
+}
+
+note left #White
+зв'язок
+багато до багатьох
+з додатковими
+атрибутами
+end note
+
+entity Wagons #SandyBrown{
+  wagon_id
+  --
+  wagon_model_id
+  wagon_serial_num 
+  production_year
+  modernization_year
+}
+
+entity Wagon_types #SandyBrown{
+  wagon_type_id 
+  --
+  wagon_type_name
+  seat_quantity 
+  seat_type
+}
+
+entity Services #LightSeaGreen {
+  service_id
+  --
+  service_name  
+  price  
+}
+
+entity Services_tickets #LightSeaGreen/LightSalmon{
+  service_ticket_id
+  --
+  service_id
+  tickets_id
+  quantity
+}
+
+note left #White
+зв'язок
+багато до багатьох
+з додатковими
+атрибутами
+end note
+
+entity Discounts #LightSeaGreen {
+  discount_id
+  --
+  discount_name  
+  percent  
+}
+
+entity Routes_Trains #Plum-LightBlue {
+  route_train_id
+  --
+  route_id
+  train_id
+  route_status
+  route_date
+  delay
+}
+
+note left #White
+зв'язок
+багато до багатьох
+з додатковими
+атрибутами
+end note
+
+entity Wagons_in_train #LightBlue-SandyBrown{
+  wagon_in_train_id 
+  --
+  train_id
+  wagon_id
+  wagon_train_num
+}
+
+entity Wagon_models #SandyBrown{
+  wagon_model_id
+  --
+  wagon_type_id
+  wagon_model_name
+  price_k
+}
+
+entity Tickets #LightSalmon {
+  ticket_id 
+  --
+  passendger_id  
+  route_train_id
+  wagon_in_train_id  
+  departure_station
+  arrival_station
+  ticket_num  
+  place_num  
+  price  
+  paid_bonuses  
+  accrued_bonuses  
+}
+
+note bottom #White
+N-арний зв'язок
+з додатковими
+атрибутами
+end note
+
+note "Придбанi\nпослуги" as n1  
+note "Придбанi\nпослуги" as n2
+note "Знижки,\nщо дiють\nна квиток" as n3
+note "Належнiсть\nакаунта" as n4
+note "Станції\nна маршрутi" as n5
+note "Вагони\nу потяга" as n6
+note "Потяги\nза рейсом" as n7
+note "Потяги\nза рейсом" as n8
+note "Квиток\nна рейс" as n9
+note "Квиток\nна вагон" as n10
+note "Квиток\nпасажира" as n11 
+note "Належнiсть\nдо типу" as n12
+note "Станції\nна маршрутi" as n13
+note "Станцiя\nприбуття" as n14
+note "Станцiя\nвiдправлення" as n15
+note "Належнiсть\nдо моделi" as n16
+note "Локомотив\nпотяга" as n17
+note "Належнiсть\nдо типу" as n18
+note "Тип\nпального" as n19
+
+Tickets }o-u-n3 
+n3-u-o{ Discounts
+
+Passengers }o-n4 
+n4--o| Accounts
+
+Stations ||--n5
+n5--o{ Routes_Stations
+
+Routes_Stations  }o--n13
+n13--|| Routes 
+
+Trains ||-u-n6
+n6-u-o{ Wagons_in_train
+
+Wagons_in_train }o--|| Wagons
+
+Routes_Trains }o--n7
+n7--|| Trains 
+
+Routes_Trains }o--n8
+n8--|| Routes 
+
+Routes_Trains ||-u-n9
+n9-u-o{ Tickets  
+
+Wagons_in_train ||-u-n10
+n10-u-o{ Tickets 
+
+Tickets }o-u-n11
+n11-u-|| Passengers 
+
+Wagon_models }o--n12
+n12--|| Wagon_types 
+
+Wagon_models ||--n16
+n16--o{ Wagons
+
+Services_tickets }o-u-n1
+n1-u-|| Services
+
+Tickets ||-l-n2
+n2-l-o{ Services_tickets
+
+Stations |o-l-n14
+n14-l-o{ Tickets
+
+Stations |o-l-n15
+n15-l-o{ Tickets
+
+Trains }o-l-n17
+n17-l-||Locomotives
+
+Locomotives}o-l-n18
+n18-l-||Locomotive_types
+
+Locomotive_types }o-u-n19
+n19-u-||Fuels
+
+right footer
+<color:black>Голубов IП-84
+<color:black>НТУУ КПІ ім.І.Сікорського
+<color:black>Київ-2020 
+end footer
+@enduml
