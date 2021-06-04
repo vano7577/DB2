@@ -1,4 +1,3 @@
-
 INSERT INTO tickets (passenger_id, route_train_id, wagon_in_train_id, departure_station, arrival_station, ticket_num, place_num)
 VALUES (1,3,40,NULL,3,1000260281,23);
 DELETE from tickets where ticket_id = 11;
@@ -11,7 +10,6 @@ CREATE VIEW group_fuel_locomotives AS
     GROUP BY 1
     ORDER BY 2 DESC;
 
--- по условию задания требуеться обернуть в процедуру
 CREATE OR REPLACE FUNCTION find_locomotives() RETURNS SETOF group_fuel_locomotives LANGUAGE SQL AS $$
 SELECT * FROM group_fuel_locomotives;
     $$;
@@ -19,7 +17,6 @@ SELECT * FROM group_fuel_locomotives;
 CREATE VIEW unused_services AS
     SELECT service_name FROM services WHERE NOT EXISTS(SELECT services_tickets.service_id FROM services_tickets);
 
--- по условию задания требуеться обернуть в процедуру
 CREATE OR REPLACE FUNCTION find_unused_services() RETURNS SETOF unused_services LANGUAGE SQL AS $$
 SELECT * FROM unused_services;
     $$;
@@ -29,15 +26,8 @@ CREATE FUNCTION find_free_locomotives () RETURNS TABLE(locomotive_num int) LANGU
     LEFT JOIN trains on locomotives.locomotive_id = trains.locomotive_id AND trains.locomotive_id IS NULL
     $$;
 SELECT train_num FROM trains
-INNER JOIN routes_trains on trains.train_id = routes_trains.train_id AND delay > 10
-;
+INNER JOIN routes_trains on trains.train_id = routes_trains.train_id AND delay > 10;
 DELETE FROM routes_trains
 WHERE route_date BETWEEN '2020-11-21' AND '2020-11-22';
-/*
-DROP FUNCTION find_free_locomotives();
-SELECT * FROM find_free_locomotives();
-SELECT * FROM find_unused_services();
 
-SELECT * FROM find_locomotives();
- */
- SELECT wagon_type_name, max(seat_quantity) from wagon_types GROUP BY wagon_type_name
+SELECT wagon_type_name, max(seat_quantity) from wagon_types GROUP BY wagon_type_name
