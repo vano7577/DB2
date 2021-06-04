@@ -90,11 +90,6 @@ AS $print$
     WHERE printed_tickets.ticket_num = in_ticket_num;
 $print$ LANGUAGE SQL;
 
-SELECT * from find_total_price(1);
-
-SELECT locomotives.locomotive_id FROM locomotives
-LEFT JOIN trains on locomotives.locomotive_id = trains.locomotive_id and trains.locomotive_id IS NULL;
-
 CREATE FUNCTION spent_time_func(in departure_time time,in arrival_time time, out spent time )  AS $BODY$
     BEGIN
     if arrival_time >= departure_time then
@@ -143,7 +138,6 @@ GROUP BY trains.train_num,
     routes_trains.route_date,
     wagon_types.wagon_type_name,
     wagon_types.seat_quantity;
-SELECT * FROM schedule;
 
 CREATE FUNCTION show_routes(in_departure_station varchar(255),in_arrival_station varchar(255),in_date date, in_departure_time time)
 RETURNS TABLE(
@@ -204,9 +198,3 @@ GROUP BY trains.train_num,
     wagon_types.wagon_type_name,
     wagon_types.seat_quantity;
     $show$ LANGUAGE SQL;
-/*
-SELECT * from print_passenger_tickets(1000260258);
-select  find_departure_station(1000260258);
-SELECT * from show_routes('Киев-Пассажирский','Львов', '2020-11-21',NULL);
-
- */
